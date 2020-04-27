@@ -1,15 +1,75 @@
 import React from "react";
+import { Button, TitleH1, ContainerSignUpPage, FormSignUpPage } from './style';
 
 class SignUpPage extends React.Component{
+    constructor(props){
+        super(props)
 
-render(){
-    return(
-        <div>
-            SIGN UP PAGE
-        </div>
-    )
-}
+        this.state = {
+            signUpForm: {}
+        }
+    }
 
+    handleFormSubmit = event => {
+        event.preventDefault()
+        
+        console.log(this.state.signUpForm)
+        // Terminar essa parte
+    }
+
+    handleInputChange = event => {
+        const { name, value } = event.target
+
+        this.setState({
+            signUpForm: {
+                ...this.state.signUpForm,
+                [name]: value
+            }
+        })
+    }
+
+    render(){
+        const { signUpForm } = this.state
+        return(
+            <ContainerSignUpPage>
+                
+                <TitleH1>Cadastro</TitleH1>
+                
+                <FormSignUpPage onSubmit={this.handleFormSubmit}>
+                    <label htmlFor="username">Usuário:</label>
+                    <input 
+                        name="username"
+                        type="text"
+                        pattern="[A-Za-z ãé]{5,}"
+                        title="Mínimo de 5 caracteres"
+                        required
+                        onChange={this.handleInputChange}
+                        value={signUpForm.name}
+                    ></input>
+                    <label htmlFor="email">E-mail:</label>
+                    <input 
+                        name="email"
+                        type="email"
+                        pattern="[a-z0-9_.+-%]+@[a-z0-9.-]+\.[a-z]{3,}$"
+                        title="E-mail inválido"                        
+                        required
+                        onChange={this.handleInputChange}
+                        value={signUpForm.email}
+                    ></input>
+                    <label htmlFor="password">Senha:</label>
+                    <input 
+                        name="password"
+                        type="password"
+                        pattern="[A-Za-z0-9]{4,8}"
+                        required
+                        onChange={this.handleInputChange}
+                        value={signUpForm.password}
+                    ></input>
+                    <Button type="submit">Cadastrar</Button>
+                </FormSignUpPage>
+            </ContainerSignUpPage>
+        )
+    }
 }
 
 export default SignUpPage;
