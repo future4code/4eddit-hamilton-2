@@ -8,6 +8,8 @@ import { createBrowserHistory } from "history";
 import { createStore, applyMiddleware, compose } from "redux";
 import { generateReducers } from "../../reducers";
 import { routerMiddleware } from "connected-react-router";
+import {AppWrapper, ContentWrapper, RouterWrapper} from "./style";
+import Header from "../Header"
 
 export const history = createBrowserHistory();
 
@@ -24,7 +26,16 @@ export const App = () => (
   <Provider store={store}>
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <Router history={history} />
+
+      <AppWrapper>
+        <ContentWrapper>
+          <Header/>
+          <RouterWrapper>
+            <Router history={history} />
+          </RouterWrapper>
+        </ContentWrapper>
+      </AppWrapper>
+
     </MuiThemeProvider>
   </Provider>
 );
