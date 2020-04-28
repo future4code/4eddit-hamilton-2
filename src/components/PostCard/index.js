@@ -8,6 +8,7 @@ render(){
             <p>{this.props.title}</p>
             <p>{this.props.text}</p>
             <p>{this.props.username}</p>
+            <button onClick={this.props.getPostDetail}>Post Detail</button>
         </div>
     )
 }

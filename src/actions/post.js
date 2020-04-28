@@ -9,7 +9,14 @@ export function setPosts(postsFromApi){
     }
 }
 
-
+export function setPostDetails(postDetailsFromApi){
+    return{
+        type: 'SET_POST_DETAILS',
+        payload:{
+            postDetails: postDetailsFromApi
+        }
+    }
+}
 
 
 export const getPosts = (token) => async (dispatch) =>{
@@ -21,4 +28,34 @@ export const getPosts = (token) => async (dispatch) =>{
     );
 
     dispatch(setPosts(response.data.posts));
+}
+
+export const createPost = (token, body) => async (dispatch) =>{
+
+    try{
+        await axios.post(
+            `https://us-central1-future-apis.cloudfunctions.net/fourEddit/posts`,body,{
+                headers:{"auth": token}
+            }
+        )
+        alert("Post criado com sucesso!");
+        dispatch(getPosts(token));
+        
+    }catch(error){
+        alert("Erro ao criar o post, tente novamente");
+    }
+}
+
+export const getPostDetails = (token, postId) => async (dispatch) =>{
+
+    try{
+        const response = await axios.get(
+            `https://us-central1-future-apis.cloudfunctions.net/fourEddit/posts/${postId}`,{
+                headers:{"auth": token}
+            }
+        )
+        dispatch(setPostDetails(response.data.post));
+    }catch(error){
+        alert("Erro ao carregar os detalhes do post")
+    }
 }
