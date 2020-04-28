@@ -1,5 +1,10 @@
 import React from 'react';
 import {CreatePostWrapper, FeedPageWrapper} from "./style";
+import { connect } from "react-redux";
+import { push, replace } from "connected-react-router";
+import {routes} from "../Router";
+import {getPosts, createPost, getPostDetails} from "../../actions/post";
+import PostCard from "../../components/PostCard";
 
 
 class FeedPage extends React.Component{
@@ -10,6 +15,15 @@ class FeedPage extends React.Component{
         }
     }
 
+componentDidMount(){
+    const {goToLoginPage, getPosts} = this.props
+    const token = localStorage.getItem("token");
+
+    ((token === null) ? goToLoginPage() 
+                      : getPosts(token) );
+}
+
+
 handleInputChange = (event) =>{
     const { name, value } = event.target;
 
@@ -17,12 +31,42 @@ handleInputChange = (event) =>{
 }
 
 handleSubmit = (event) =>{
+    const {createPost} = this.props
     event.preventDefault();
 
-    //ligar com a action
+    const token = localStorage.getItem("token");
 
-    console.log(this.state.postForm)
+    createPost(token, this.state.postForm);
+    
+    this.setState({postForm: ""});
 }
+
+handleGetPostDetails = (postId) =>{
+    const {getPostDetails, goToPostDetailPage} = this.props
+    const token = localStorage.getItem("token");
+
+    getPostDetails(token, postId);
+    goToPostDetailPage();
+}
+
+renderPosts = () =>{
+    const {posts} = this.props
+
+    return (
+        posts.map((element)=>{
+            return (
+                <PostCard
+                    key={element.id}
+                    title={element.title}
+                    username={element.username}
+                    text={element.text}
+                    getPostDetail={()=>this.handleGetPostDetails(element.id)}
+                />
+            )
+        })
+    )
+}
+
 
 
 render(){
@@ -56,6 +100,7 @@ render(){
                 </form>
             </CreatePostWrapper>
 
+            {this.renderPosts()}
 
         </FeedPageWrapper>
     )
@@ -63,4 +108,22 @@ render(){
 
 }
 
-export default FeedPage;
+const mapStateToProps = (state) =>{
+    return{
+        posts: state.post.posts
+    }
+}
+
+const mapDispatchToProps = dispatch =>{
+    return{
+        goToLoginPage: () => dispatch(replace(routes.root)),
+        getPosts: (token) => dispatch(getPosts(token)),
+        createPost: (token, body) => dispatch(createPost(token, body)),
+        getPostDetails: (token, postId) => dispatch(getPostDetails(token, postId)),
+        goToPostDetailPage: ()=> dispatch(push(routes.postDetail))
+    }
+}
+
+
+
+export default connect (mapStateToProps, mapDispatchToProps) (FeedPage);

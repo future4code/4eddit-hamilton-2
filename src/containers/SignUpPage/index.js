@@ -1,5 +1,7 @@
 import React from "react";
 import { Button, TitleH1, ContainerSignUpPage, FormSignUpPage } from './style';
+import {connect} from "react-redux";
+import { signUp } from "../../actions/login"
 
 class SignUpPage extends React.Component{
     constructor(props){
@@ -12,9 +14,8 @@ class SignUpPage extends React.Component{
 
     handleFormSubmit = event => {
         event.preventDefault()
-        
-        console.log(this.state.signUpForm)
-        // Terminar essa parte
+      
+        this.props.signUp(this.state.signUpForm);
     }
 
     handleInputChange = event => {
@@ -72,4 +73,15 @@ class SignUpPage extends React.Component{
     }
 }
 
-export default SignUpPage;
+
+const mapDispatchToProps = dispatch =>{
+    return{
+        signUp: (body) => dispatch(signUp(body))
+    }
+}
+
+
+
+
+
+export default connect (null, mapDispatchToProps) (SignUpPage);
