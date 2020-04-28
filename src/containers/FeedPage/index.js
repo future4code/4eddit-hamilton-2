@@ -3,7 +3,7 @@ import {CreatePostWrapper, FeedPageWrapper} from "./style";
 import { connect } from "react-redux";
 import { push, replace } from "connected-react-router";
 import {routes} from "../Router";
-import {getPosts, createPost, getPostDetails} from "../../actions/post";
+import {getPosts, createPost, getPostDetails, addVote} from "../../actions/post";
 import PostCard from "../../components/PostCard";
 
 
@@ -49,8 +49,45 @@ handleGetPostDetails = (postId) =>{
     goToPostDetailPage();
 }
 
+handleVote = (currentDirection, token, postId, type) =>{
+    const { noVote, upVote, downVote } = this.props
+    console.log("Cheguei na função.")
+    console.log(type)
+    
+    switch(type){
+        case "UP_VOTE": {
+            console.log("Cheguei no UP_VOTE")
+            const bruno = () => {
+                if(currentDirection === 1) {
+                    console.log("Entrei no if UP VOTE Direction 1")
+                    return noVote(token, postId)
+                } else {
+                    console.log("Entrei no if UP VOTE Direction 0")
+                    return upVote(token, postId)
+                }
+            }
+            return bruno
+
+        }
+
+        case "DOWN_VOTE": {
+            console.log("Cheguei no DOWN_VOTE")
+            const bruno = () => {
+                if(currentDirection === -1) {
+                    return noVote(token, postId)
+                } else {
+                    return downVote(token, postId)
+                }
+            }
+            return bruno
+                
+        }
+    }
+}
+
 renderPosts = () =>{
-    const {posts} = this.props
+    const {posts, downVote} = this.props
+    const token = localStorage.getItem("token");
 
     return (
         posts.map((element)=>{
@@ -61,6 +98,9 @@ renderPosts = () =>{
                     username={element.username}
                     text={element.text}
                     getPostDetail={()=>this.handleGetPostDetails(element.id)}
+                    upVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "UP_VOTE")}
+                    downVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "DOWN_VOTE")}
+                    numOfVotes={element.votesCount}
                 />
             )
         })
@@ -120,7 +160,10 @@ const mapDispatchToProps = dispatch =>{
         getPosts: (token) => dispatch(getPosts(token)),
         createPost: (token, body) => dispatch(createPost(token, body)),
         getPostDetails: (token, postId) => dispatch(getPostDetails(token, postId)),
-        goToPostDetailPage: ()=> dispatch(push(routes.postDetail))
+        goToPostDetailPage: ()=> dispatch(push(routes.postDetail)),
+        upVote: (token, postId) => dispatch(addVote(token, postId, 1)),
+        downVote: (token, postId) => dispatch(addVote(token, postId, -1)),
+        noVote: (token, postId) => dispatch(addVote(token, postId, 0))
     }
 }
 

@@ -59,3 +59,17 @@ export const getPostDetails = (token, postId) => async (dispatch) =>{
         alert("Erro ao carregar os detalhes do post")
     }
 }
+
+export const addVote = (token, postId, direction) => async (dispatch) => {
+    const body = {
+        direction: direction
+    }
+    
+    const response = await axios.put(`https://us-central1-future-apis.cloudfunctions.net/fourEddit/posts/${postId}/vote`, body, {
+        headers: {
+            "auth": token
+        }
+    })
+
+    console.log(response)
+}
