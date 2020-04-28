@@ -1,5 +1,10 @@
 import React from 'react';
 import {CreatePostWrapper, FeedPageWrapper} from "./style";
+import { connect } from "react-redux";
+import { replace } from "connected-react-router";
+import {routes} from "../Router";
+import {getPosts} from "../../actions/post"
+import PostCard from "../../components/PostCard"
 
 
 class FeedPage extends React.Component{
@@ -9,6 +14,15 @@ class FeedPage extends React.Component{
             postForm:""
         }
     }
+
+componentDidMount(){
+    const {goToLoginPage, getPosts} = this.props
+    const token = localStorage.getItem("token");
+
+    ((token === null) ? goToLoginPage() 
+                      : getPosts(token) );
+}
+
 
 handleInputChange = (event) =>{
     const { name, value } = event.target;
@@ -23,6 +37,24 @@ handleSubmit = (event) =>{
 
     console.log(this.state.postForm)
 }
+
+renderPosts = () =>{
+    const {posts} = this.props
+
+    return (
+        posts.map((element)=>{
+            return (
+                <PostCard
+                    key={element.id}
+                    title={element.title}
+                    username={element.username}
+                    text={element.text}
+                />
+            )
+        })
+    )
+}
+
 
 
 render(){
@@ -56,6 +88,7 @@ render(){
                 </form>
             </CreatePostWrapper>
 
+            {this.renderPosts()}
 
         </FeedPageWrapper>
     )
@@ -63,4 +96,19 @@ render(){
 
 }
 
-export default FeedPage;
+const mapStateToProps = (state) =>{
+    return{
+        posts: state.post.posts
+    }
+}
+
+const mapDispatchToProps = dispatch =>{
+    return{
+        goToLoginPage: () => dispatch(replace(routes.root)),
+        getPosts: (token) => dispatch(getPosts(token))
+    }
+}
+
+
+
+export default connect (mapStateToProps, mapDispatchToProps) (FeedPage);

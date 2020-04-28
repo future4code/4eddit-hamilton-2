@@ -8,14 +8,14 @@ import FeedDetail from "../FeedDetail";
 
 
 
-const routes = {
+export const routes = {
   root: "/",
   signUp: "/signup",
   feed: "/feed",
   feedDetail: "/feed/detail"
 };
 
-function Router(props) {
+export function Router(props) {
   return (
     <ConnectedRouter history={props.history}>
       <Switch>
@@ -29,4 +29,4 @@ function Router(props) {
   );
 }
 
-export default Router;
+// export default Router;

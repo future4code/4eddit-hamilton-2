@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
+import {login} from "../../actions/login";
+import { routes } from "../Router";
+import { push } from "connected-react-router";
+
 
 const LabelColor = styled.label` /*tirar quando for tirar o roxo*/
   color: white;
@@ -13,6 +18,12 @@ class LoginPage extends Component {
     }
   }
 
+componentDidMount(){
+  const token = localStorage.getItem("token");
+
+  ((token !== null) && this.props.gotoFeedPage());
+}
+
 handleInputChange = event => {
   const {name, value} = event.target
 
@@ -22,6 +33,8 @@ handleInputChange = event => {
 handleOnSubmit = event => {
   event.preventDefault();
   console.log(this.state.loginForm);
+
+  this.props.login(this.state.loginForm)
 }
 
   render() {
@@ -54,4 +67,14 @@ handleOnSubmit = event => {
   }
 }
 
-export default LoginPage;
+
+const mapDispatchToProps = dispatch =>{
+  return{
+    login: (body) => dispatch(login(body)),
+    gotoFeedPage: () => dispatch(push(routes.feed))
+  }
+}
+
+
+
+export default connect (null, mapDispatchToProps) (LoginPage);
