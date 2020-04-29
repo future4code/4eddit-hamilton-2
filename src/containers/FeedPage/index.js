@@ -3,7 +3,7 @@ import {CreatePostWrapper, FeedPageWrapper} from "./style";
 import { connect } from "react-redux";
 import { push, replace } from "connected-react-router";
 import {routes} from "../Router";
-import {getPosts, createPost, getPostDetails} from "../../actions/post";
+import {getPosts, createPost, getPostDetails, addVote} from "../../actions/post";
 import PostCard from "../../components/PostCard";
 
 
@@ -49,11 +49,44 @@ handleGetPostDetails = (postId) =>{
     goToPostDetailPage();
 }
 
+handleVote = (currentDirection, token, postId, type) =>{
+    const { noVote, upVote, downVote } = this.props
+    
+    switch(type){
+        case "UP_VOTE": {
+            const updateVote = () => {
+                if(currentDirection === 1) {
+                    return noVote(token, postId)
+                } else {
+                    return upVote(token, postId)
+                }
+            }
+            return updateVote()
+        }
+
+        case "DOWN_VOTE": {
+            const updateVote = () => {
+                if(currentDirection === -1) {
+                    return noVote(token, postId)
+                } else {
+                    return downVote(token, postId)
+                }
+            }
+            return updateVote()
+        }
+    }
+}
+
 renderPosts = () =>{
     const {posts} = this.props
+    const token = localStorage.getItem("token");
 
-    return (
-        posts.map((element)=>{
+    const postsInOrder = posts.sort((b, a) => 
+        a.votesCount - b.votesCount
+    )
+
+    return (        
+        postsInOrder.map((element)=>{
             return (
                 <PostCard
                     key={element.id}
@@ -61,6 +94,10 @@ renderPosts = () =>{
                     username={element.username}
                     text={element.text}
                     getPostDetail={()=>this.handleGetPostDetails(element.id)}
+                    upVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "UP_VOTE")}
+                    downVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "DOWN_VOTE")}
+                    numOfVotes={element.votesCount}
+                    voteDirection={element.userVoteDirection}
                 />
             )
         })
@@ -120,7 +157,10 @@ const mapDispatchToProps = dispatch =>{
         getPosts: (token) => dispatch(getPosts(token)),
         createPost: (token, body) => dispatch(createPost(token, body)),
         getPostDetails: (token, postId) => dispatch(getPostDetails(token, postId)),
-        goToPostDetailPage: ()=> dispatch(push(routes.postDetail))
+        goToPostDetailPage: ()=> dispatch(push(routes.postDetail)),
+        upVote: (token, postId) => dispatch(addVote(token, postId, 1)),
+        downVote: (token, postId) => dispatch(addVote(token, postId, -1)),
+        noVote: (token, postId) => dispatch(addVote(token, postId, 0))
     }
 }
 
