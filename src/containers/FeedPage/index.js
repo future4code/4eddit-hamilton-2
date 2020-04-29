@@ -78,11 +78,15 @@ handleVote = (currentDirection, token, postId, type) =>{
 }
 
 renderPosts = () =>{
-    const {posts, downVote} = this.props
+    const {posts} = this.props
     const token = localStorage.getItem("token");
 
-    return (
-        posts.map((element)=>{
+    const postsInOrder = posts.sort((b, a) => 
+        a.votesCount - b.votesCount
+    )
+
+    return (        
+        postsInOrder.map((element)=>{
             return (
                 <PostCard
                     key={element.id}
