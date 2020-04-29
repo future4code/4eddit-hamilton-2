@@ -14,6 +14,8 @@ render(){
             <button onClick={this.props.downVote}>-</button>
             <hr />
             <strong>Votos: {this.props.numOfVotes}</strong>
+            <br />
+            <strong>Direção Voto: {this.props.voteDirection}</strong>
         </PostCardWrapper>
     )
 }

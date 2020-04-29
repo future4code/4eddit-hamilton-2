@@ -1,11 +1,21 @@
 import React from 'react';
 import { connect } from "react-redux";
 import {routes} from "../Router";
-import {replace} from "connected-react-router"
+import {replace, goBack} from "connected-react-router"
+import CommentCard from '../../components/CommentCard';
+import { createComment } from '../../actions/comment';
 
 
 
 class PostDetailPage extends React.Component{
+    constructor(props){
+        super(props)
+
+        this.state = {
+            inputComment: ''
+        }
+    }
+
 
 
 componentDidMount(){
@@ -26,29 +36,63 @@ componentDidMount(){
 renderComments=()=>{
     const {postDetails} = this.props
 
-    console.log(postDetails.comments)
-
     if(postDetails.comments !== undefined){
         return (
             postDetails.comments.map((comment)=>{
                 return(
                     //criar componente de card
-                    <div>
-                        <p>{comment.text}</p>
-                    </div>
+                    <CommentCard 
+                        username={comment.username}
+                        text={comment.text}
+                        votesCount={comment.votesCount}
+                    />
                     )
                 })
         )
     }
 }
 
+handleInputComment = (event) => {
+    this.setState({
+        inputComment: event.target.value
+    })
+}
+
+handleSubmit = (event) => {
+    const { createComment, postDetails } = this.props
+    const { inputComment } = this.state
+    const token = localStorage.getItem("token")
+
+    event.preventDefault()
+
+    createComment(token, postDetails.id, inputComment)
+
+    this.setState({
+        inputComment: ''
+    })
+}
 
 render(){
+
+    const { goToFeedPage } = this.props
 
     return(
         <div>
             FeedDetail
-            
+            <button onClick={goToFeedPage}>Voltar</button>
+
+            <form onSubmit={this.handleSubmit}>
+                <label forHtml="text">Comentário: </label>
+                <input 
+                    name="text"
+                    type="text"
+                    onChange={this.handleInputComment}
+                    value={this.state.inputComment}
+                />                
+                
+                <button type="submit">Enviar</button>
+            </form>
+
             {this.renderComments()}
         </div>
     )
@@ -65,7 +109,8 @@ const mapStateToProps = (state) =>{
 const mapDispatchToProps = dispatch =>{
     return{
         goToLoginPage:()=> dispatch(replace(routes.root)),
-        goToFeedPage:()=> dispatch(replace(routes.feed))
+        goToFeedPage:()=> dispatch(goBack()),
+        createComment: (token, postId, commentText) => dispatch(createComment(token, postId, commentText))
     }
 }
 

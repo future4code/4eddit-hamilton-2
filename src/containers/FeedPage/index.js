@@ -51,36 +51,28 @@ handleGetPostDetails = (postId) =>{
 
 handleVote = (currentDirection, token, postId, type) =>{
     const { noVote, upVote, downVote } = this.props
-    console.log("Cheguei na função.")
-    console.log(type)
     
     switch(type){
         case "UP_VOTE": {
-            console.log("Cheguei no UP_VOTE")
-            const bruno = () => {
+            const updateVote = () => {
                 if(currentDirection === 1) {
-                    console.log("Entrei no if UP VOTE Direction 1")
                     return noVote(token, postId)
                 } else {
-                    console.log("Entrei no if UP VOTE Direction 0")
                     return upVote(token, postId)
                 }
             }
-            return bruno
-
+            return updateVote()
         }
 
         case "DOWN_VOTE": {
-            console.log("Cheguei no DOWN_VOTE")
-            const bruno = () => {
+            const updateVote = () => {
                 if(currentDirection === -1) {
                     return noVote(token, postId)
                 } else {
                     return downVote(token, postId)
                 }
             }
-            return bruno
-                
+            return updateVote()
         }
     }
 }
@@ -101,6 +93,7 @@ renderPosts = () =>{
                     upVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "UP_VOTE")}
                     downVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "DOWN_VOTE")}
                     numOfVotes={element.votesCount}
+                    voteDirection={element.userVoteDirection}
                 />
             )
         })
