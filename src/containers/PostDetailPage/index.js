@@ -4,6 +4,7 @@ import {routes} from "../Router";
 import {replace, goBack} from "connected-react-router"
 import CommentCard from '../../components/CommentCard';
 import { createComment } from '../../actions/comment';
+import { voteComment } from '../../actions/comment';
 
 
 
@@ -41,11 +42,15 @@ renderComments=()=>{
             postDetails.comments.map((comment)=>{
                 return(
                     //criar componente de card
-                    <CommentCard 
+                    <CommentCard
+                        key={comment.id}
                         username={comment.username}
                         text={comment.text}
                         votesCount={comment.votesCount}
-                    />
+                        upVoteComment={() => this.handleVoteComment(comment.userVoteDirection, "UP_VOTE_COMMENT", postDetails.id, comment.id)}
+                        downVoteComment={() => this.handleVoteComment(comment.userVoteDirection, "DOWN_VOTE_COMMENT", postDetails.id, comment.id)}
+                        voteCommentDirection={comment.userVoteDirection}
+                    />                    
                     )
                 })
         )
@@ -72,6 +77,35 @@ handleSubmit = (event) => {
     })
 }
 
+handleVoteComment = (currentDirection, type, postId, commentId) => {
+    const { upVoteComment, downVoteComment, noVoteComment } = this.props
+    const token = localStorage.getItem("token")
+
+    switch(type){
+        case "UP_VOTE_COMMENT": {
+            const updateVoteComment = () => {
+                if(currentDirection === 1){
+                    return noVoteComment(postId, commentId, token)
+                } else {
+                    return upVoteComment(postId, commentId, token)
+                }
+            }
+            return updateVoteComment()
+        }
+
+        case "DOWN_VOTE_COMMENT": {
+            const updateVoteComment = () => {
+                if(currentDirection === -1){
+                    return noVoteComment(postId, commentId, token)                
+                } else {
+                    return downVoteComment(postId, commentId, token)
+                }
+            }
+            return updateVoteComment()
+        }
+    }
+}
+
 render(){
 
     const { goToFeedPage } = this.props
@@ -82,7 +116,7 @@ render(){
             <button onClick={goToFeedPage}>Voltar</button>
 
             <form onSubmit={this.handleSubmit}>
-                <label forHtml="text">Comentário: </label>
+                <label htmlFor="text">Comentário: </label>
                 <input 
                     name="text"
                     type="text"
@@ -110,7 +144,10 @@ const mapDispatchToProps = dispatch =>{
     return{
         goToLoginPage:()=> dispatch(replace(routes.root)),
         goToFeedPage:()=> dispatch(goBack()),
-        createComment: (token, postId, commentText) => dispatch(createComment(token, postId, commentText))
+        createComment: (token, postId, commentText) => dispatch(createComment(token, postId, commentText)),
+        upVoteComment: (postId, commentId, token) => dispatch(voteComment(1, postId, commentId, token)),
+        downVoteComment: (postId, commentId, token) => dispatch(voteComment(-1, postId, commentId, token)),
+        noVoteComment: (postId, commentId, token) => dispatch(voteComment(0, postId, commentId, token))
     }
 }
 

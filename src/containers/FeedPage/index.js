@@ -38,7 +38,7 @@ handleSubmit = (event) =>{
 
     createPost(token, this.state.postForm);
     
-    this.setState({postForm: ""});
+    this.setState({postForm: ""});    
 }
 
 handleGetPostDetails = (postId) =>{

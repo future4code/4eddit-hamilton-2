@@ -22,3 +22,18 @@ export const createComment = (token, postId, commentText) => async (dispatch) =>
     }
 
 }
+
+export const voteComment = (directionVote, postId, commentId, token) => async (dispatch) => {
+
+    const body = {
+        direction: directionVote
+    }
+
+    const response = await axios.put(`https://us-central1-future-apis.cloudfunctions.net/fourEddit/posts/${postId}/comment/${commentId}/vote`, body, {
+        headers: {
+            'auth': token
+        }
+    })    
+
+    console.log(response)
+}
