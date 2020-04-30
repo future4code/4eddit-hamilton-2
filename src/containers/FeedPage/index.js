@@ -1,10 +1,11 @@
 import React from 'react';
-import {CreatePostWrapper, FeedPageWrapper} from "./style";
+import {CreatePostWrapper, FeedPageWrapper, FormFeedPage, TypographyFeedPage, ButtonFeedPage} from "./style";
 import { connect } from "react-redux";
 import { push, replace } from "connected-react-router";
 import {routes} from "../Router";
 import {getPosts, createPost, getPostDetails, addVote} from "../../actions/post";
 import PostCard from "../../components/PostCard";
+import TextField from '@material-ui/core/TextField';
 
 
 class FeedPage extends React.Component{
@@ -112,30 +113,32 @@ render(){
 
     return(
         <FeedPageWrapper>
-            <div>
-                <h3>FeedPage</h3>
-            </div>
-
             <CreatePostWrapper>
-                <form onSubmit={this.handleSubmit}>
-                    <label htmlFor={"title"}>Título</label>
-                    <input name={"title"}
+                <FormFeedPage onSubmit={this.handleSubmit}>
+                    <TypographyFeedPage variant="h6">Feed de Posts</TypographyFeedPage>
+                    <TextField 
+                        label="Título"
+                        variant="outlined"
+                        name={"title"}
                         type={"text"}
                         pattern={"[A-Za-z ãéÁáêõÕÊíÍçÇÚúüÜ 0123456789]{3,}"}
                         title={"O título deve conter pelo menos 3 letras"}
                         value={postForm.title || ""}
                         onChange={this.handleInputChange}
                         required
-                    /><br/>
-                    <label htmlFor={"text"}>Conteúdo</label>
-                    <input name={"text"}
+                    />
+                    
+                    <TextField 
+                        label="Conteúdo"
+                        variant="outlined"
+                        name={"text"}
                         type={"text"}
                         value={postForm.text || ""}
                         onChange={this.handleInputChange}
                         required
-                    /><br/>
-                    <button type="submit">Postar</button>
-                </form>
+                    />
+                    <ButtonFeedPage variant="contained" color="primary" type="submit">Postar</ButtonFeedPage>
+                </FormFeedPage>
             </CreatePostWrapper>
 
             {this.renderPosts()}

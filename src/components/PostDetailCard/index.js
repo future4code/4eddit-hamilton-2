@@ -1,18 +1,20 @@
 import React from 'react'
+import { PostDetailCardWrapper, TypographyTitle, TypographyPost, TypographyUser } from './style';
+import Typography from '@material-ui/core/Typography';
 
 export default function PostDetailCard(props) {
     return (
-        <div>
-            <strong>Usuário: {props.username}</strong>
+        <PostDetailCardWrapper>
+            <TypographyTitle>{props.title}</TypographyTitle>
             <br />
-            <strong>Título: {props.title}</strong>
+            <TypographyPost>{props.text}</TypographyPost>
             <br />
-            <strong>Post: {props.text}</strong>
+            <TypographyUser>Usuário: {props.username}</TypographyUser>
             <br />
-            <strong>{props.votesCount} Votos</strong>
+            <Typography>{props.votesCount} Votos</Typography>
             <br />
-            <strong>{props.commentsNumber} Comentários</strong>
+            <Typography>{props.commentsNumber} Comentários</Typography>
             <br />
-        </div>
+        </PostDetailCardWrapper>
     )
 }
