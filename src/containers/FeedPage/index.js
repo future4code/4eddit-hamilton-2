@@ -107,7 +107,6 @@ renderPosts = () =>{
 }
 
 
-
 render(){
     const {postForm}=this.state
     

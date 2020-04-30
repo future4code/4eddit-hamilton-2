@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 
 class Header extends React.Component{
 
-
 logout = () => {
     localStorage.clear()
     this.props.goToLoginPage()
