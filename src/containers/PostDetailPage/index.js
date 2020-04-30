@@ -38,8 +38,13 @@ renderComments=()=>{
     const {postDetails} = this.props
 
     if(postDetails.comments !== undefined){
+        
+        const postsDetailsInOrder = postDetails.comments.sort((b, a) => 
+            a.votesCount - b.votesCount
+        )
+        
         return (
-            postDetails.comments.map((comment)=>{
+            postsDetailsInOrder.map((comment)=>{
                 return(
                     //criar componente de card
                     <CommentCard

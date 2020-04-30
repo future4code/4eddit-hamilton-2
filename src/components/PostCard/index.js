@@ -16,6 +16,8 @@ render(){
             <strong>Votos: {this.props.numOfVotes}</strong>
             <br />
             <strong>Direção Voto: {this.props.voteDirection}</strong>
+            <br />
+            <strong>Quantidade de Comentários: {this.props.numOfComments}</strong>
         </PostCardWrapper>
     )
 }

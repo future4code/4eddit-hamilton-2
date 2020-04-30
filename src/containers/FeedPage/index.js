@@ -98,6 +98,7 @@ renderPosts = () =>{
                     downVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "DOWN_VOTE")}
                     numOfVotes={element.votesCount}
                     voteDirection={element.userVoteDirection}
+                    numOfComments={element.commentsCount}
                 />
             )
         })
