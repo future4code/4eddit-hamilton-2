@@ -10,6 +10,7 @@ class Header extends React.Component{
 logout = () => {
     localStorage.clear()
     this.props.goToLoginPage()
+    window.location.reload(false)
 }
 
 render(){    
@@ -17,7 +18,9 @@ render(){
         <HeaderWrapper>
             <ImgLogo src={require('../../img/logo.png')} />
 
+             {(localStorage.getItem("token") !== null) && (
             <ButtonHeader variant="contained" color="secondary" onClick={this.logout}>Logout</ButtonHeader>
+            )}
         </HeaderWrapper>
     )
 }

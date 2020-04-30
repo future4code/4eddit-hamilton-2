@@ -115,47 +115,57 @@ handleVoteComment = (currentDirection, type, postId, commentId) => {
 
 render(){
 
-    const { goToFeedPage, postDetails } = this.props    
+    const { goToFeedPage, postDetails } = this.props
 
-    return(
-        <PostDetailPageWrapper>
-            <ArrowBack onClick={goToFeedPage}>Voltar</ArrowBack>
-            
-            <TypographyPostDetailPage variant="h6" gutterBottom>Detalhes</TypographyPostDetailPage>
-            
-            <PaperWrapper>
-                <PaperDetailPage elevation={3}>
-                    <PostDetailCard 
-                        username={postDetails.username}
-                        title={postDetails.title}
-                        text={postDetails.text}
-                        votesCount={postDetails.votesCount}
-                        commentsNumber={postDetails.commentsCount}
-                    />
+    if(this.props.postDetails.comments === undefined){
+        return (
+            <div>
+                <ArrowBack onClick={goToFeedPage}>Voltar</ArrowBack>
+                <h3>Carregando...</h3>
+            </div>
+        )
+    } else {
 
-                    <FormPostDetailPage onSubmit={this.handleSubmit}>
-                            <TextField
-                                label="Comentário" 
-                                variant="outlined"
-                                name="text"
-                                type="text"
-                                onChange={this.handleInputComment}
-                                value={this.state.inputComment}
-                            />                
-                            
-                            <ButtonPostDetailPage 
-                                variant="contained"
-                                color="primary"
-                                type="submit">
-                                    Enviar
-                            </ButtonPostDetailPage>
-                    </FormPostDetailPage>                
-                </PaperDetailPage>
-            </PaperWrapper>
+        return(
+            <PostDetailPageWrapper>
+                <ArrowBack onClick={goToFeedPage}>Voltar</ArrowBack>
+                
+                <TypographyPostDetailPage variant="h6" gutterBottom>Detalhes</TypographyPostDetailPage>
+                
+                <PaperWrapper>
+                    <PaperDetailPage elevation={3}>
+                        <PostDetailCard 
+                            username={postDetails.username}
+                            title={postDetails.title}
+                            text={postDetails.text}
+                            votesCount={postDetails.votesCount}
+                            commentsNumber={postDetails.commentsCount}
+                        />
 
-            {this.renderComments()}
-        </PostDetailPageWrapper>
-    )
+                        <FormPostDetailPage onSubmit={this.handleSubmit}>
+                                <TextField
+                                    label="Comentário" 
+                                    variant="outlined"
+                                    name="text"
+                                    type="text"
+                                    onChange={this.handleInputComment}
+                                    value={this.state.inputComment}
+                                />                
+                                
+                                <ButtonPostDetailPage 
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit">
+                                        Enviar
+                                </ButtonPostDetailPage>
+                        </FormPostDetailPage>                
+                    </PaperDetailPage>
+                </PaperWrapper>
+
+                {this.renderComments()}
+            </PostDetailPageWrapper>
+        )
+    }
 }
 
 }

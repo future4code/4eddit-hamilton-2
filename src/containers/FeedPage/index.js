@@ -110,41 +110,50 @@ renderPosts = () =>{
 
 render(){
     const {postForm}=this.state
+    
+    if(this.props.posts.length < 1){
+        return (
+            <div>
+                <h3>Carregando...</h3>
+            </div>
+        )
+    } else {
+    
+        return(
+            <FeedPageWrapper>
+                <CreatePostWrapper>
+                    <FormFeedPage onSubmit={this.handleSubmit}>
+                        <TypographyFeedPage variant="h6">Feed de Posts</TypographyFeedPage>
+                        <TextField 
+                            label="Título"
+                            variant="outlined"
+                            name={"title"}
+                            type={"text"}
+                            pattern={"[A-Za-z ãéÁáêõÕÊíÍçÇÚúüÜ 0123456789]{3,}"}
+                            title={"O título deve conter pelo menos 3 letras"}
+                            value={postForm.title || ""}
+                            onChange={this.handleInputChange}
+                            required
+                        />
+                        
+                        <TextField 
+                            label="Conteúdo"
+                            variant="outlined"
+                            name={"text"}
+                            type={"text"}
+                            value={postForm.text || ""}
+                            onChange={this.handleInputChange}
+                            required
+                        />
+                        <ButtonFeedPage variant="contained" color="primary" type="submit">Postar</ButtonFeedPage>
+                    </FormFeedPage>
+                </CreatePostWrapper>
 
-    return(
-        <FeedPageWrapper>
-            <CreatePostWrapper>
-                <FormFeedPage onSubmit={this.handleSubmit}>
-                    <TypographyFeedPage variant="h6">Feed de Posts</TypographyFeedPage>
-                    <TextField 
-                        label="Título"
-                        variant="outlined"
-                        name={"title"}
-                        type={"text"}
-                        pattern={"[A-Za-z ãéÁáêõÕÊíÍçÇÚúüÜ 0123456789]{3,}"}
-                        title={"O título deve conter pelo menos 3 letras"}
-                        value={postForm.title || ""}
-                        onChange={this.handleInputChange}
-                        required
-                    />
-                    
-                    <TextField 
-                        label="Conteúdo"
-                        variant="outlined"
-                        name={"text"}
-                        type={"text"}
-                        value={postForm.text || ""}
-                        onChange={this.handleInputChange}
-                        required
-                    />
-                    <ButtonFeedPage variant="contained" color="primary" type="submit">Postar</ButtonFeedPage>
-                </FormFeedPage>
-            </CreatePostWrapper>
+                {this.renderPosts()}
 
-            {this.renderPosts()}
-
-        </FeedPageWrapper>
-    )
+            </FeedPageWrapper>
+        )
+    }
 }
 
 }

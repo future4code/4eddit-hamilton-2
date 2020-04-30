@@ -29,8 +29,6 @@ handleInputChange = event => {
 
 handleOnSubmit = event => {
   event.preventDefault();
-  console.log(this.state.loginForm);
-
   this.props.login(this.state.loginForm)
 }
 
@@ -65,8 +63,7 @@ handleOnSubmit = event => {
                 value={this.state.loginForm.password}
                 onChange={this.handleInputChange} 
                 required/>
-            <br />
-            {/* <button type={"submit"}>Entrar</button> */}
+            <br />            
             <ButtonLogin type={"submit"} variant="contained" color="primary">
               Entrar
             </ButtonLogin>
