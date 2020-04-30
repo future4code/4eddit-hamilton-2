@@ -28,6 +28,7 @@ export const login = (body) => async (dispatch) =>{
 
         localStorage.setItem("token", response.data.token);
         dispatch(push(routes.feed));
+        window.location.reload(false)
 
     } catch(error){
         alert("Erro ao realizar o login, tente outra vez")

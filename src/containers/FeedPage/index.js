@@ -1,10 +1,11 @@
 import React from 'react';
-import {CreatePostWrapper, FeedPageWrapper} from "./style";
+import {CreatePostWrapper, FeedPageWrapper, FormFeedPage, TypographyFeedPage, ButtonFeedPage} from "./style";
 import { connect } from "react-redux";
 import { push, replace } from "connected-react-router";
 import {routes} from "../Router";
 import {getPosts, createPost, getPostDetails, addVote} from "../../actions/post";
 import PostCard from "../../components/PostCard";
+import TextField from '@material-ui/core/TextField';
 
 
 class FeedPage extends React.Component{
@@ -38,7 +39,7 @@ handleSubmit = (event) =>{
 
     createPost(token, this.state.postForm);
     
-    this.setState({postForm: ""});
+    this.setState({postForm: ""});    
 }
 
 handleGetPostDetails = (postId) =>{
@@ -98,6 +99,7 @@ renderPosts = () =>{
                     downVote={()=>this.handleVote(element.userVoteDirection, token, element.id, "DOWN_VOTE")}
                     numOfVotes={element.votesCount}
                     voteDirection={element.userVoteDirection}
+                    numOfComments={element.commentsCount}
                 />
             )
         })
@@ -108,39 +110,50 @@ renderPosts = () =>{
 
 render(){
     const {postForm}=this.state
-
-    return(
-        <FeedPageWrapper>
+    
+    if(this.props.posts.length < 1){
+        return (
             <div>
-                <h3>FeedPage</h3>
+                <h3>Carregando...</h3>
             </div>
+        )
+    } else {
+    
+        return(
+            <FeedPageWrapper>
+                <CreatePostWrapper>
+                    <FormFeedPage onSubmit={this.handleSubmit}>
+                        <TypographyFeedPage variant="h6">Feed de Posts</TypographyFeedPage>
+                        <TextField 
+                            label="Título"
+                            variant="outlined"
+                            name={"title"}
+                            type={"text"}
+                            pattern={"[A-Za-z ãéÁáêõÕÊíÍçÇÚúüÜ 0123456789]{3,}"}
+                            title={"O título deve conter pelo menos 3 letras"}
+                            value={postForm.title || ""}
+                            onChange={this.handleInputChange}
+                            required
+                        />
+                        
+                        <TextField 
+                            label="Conteúdo"
+                            variant="outlined"
+                            name={"text"}
+                            type={"text"}
+                            value={postForm.text || ""}
+                            onChange={this.handleInputChange}
+                            required
+                        />
+                        <ButtonFeedPage variant="contained" color="primary" type="submit">Postar</ButtonFeedPage>
+                    </FormFeedPage>
+                </CreatePostWrapper>
 
-            <CreatePostWrapper>
-                <form onSubmit={this.handleSubmit}>
-                    <label htmlFor={"title"}>Título</label>
-                    <input name={"title"}
-                        type={"text"}
-                        pattern={"[A-Za-z ãéÁáêõÕÊíÍçÇÚúüÜ 0123456789]{3,}"}
-                        title={"O título deve conter pelo menos 3 letras"}
-                        value={postForm.title || ""}
-                        onChange={this.handleInputChange}
-                        required
-                    /><br/>
-                    <label htmlFor={"text"}>Conteúdo</label>
-                    <input name={"text"}
-                        type={"text"}
-                        value={postForm.text || ""}
-                        onChange={this.handleInputChange}
-                        required
-                    /><br/>
-                    <button type="submit">Postar</button>
-                </form>
-            </CreatePostWrapper>
+                {this.renderPosts()}
 
-            {this.renderPosts()}
-
-        </FeedPageWrapper>
-    )
+            </FeedPageWrapper>
+        )
+    }
 }
 
 }

@@ -3,6 +3,10 @@ import orange from "@material-ui/core/colors/orange";
 
 export default createMuiTheme({
   palette: {
-    primary: orange
+    primary: {main: "#ed7f61"},
+    secondary: {main: "#eb6b47"}
+  },
+  typography: {
+    fontFamily: 'Josefin Sans'
   }
 });

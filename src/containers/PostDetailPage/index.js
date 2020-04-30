@@ -4,7 +4,10 @@ import {routes} from "../Router";
 import {replace, goBack} from "connected-react-router"
 import CommentCard from '../../components/CommentCard';
 import { createComment } from '../../actions/comment';
-
+import { voteComment } from '../../actions/comment';
+import PostDetailCard from '../../components/PostDetailCard';
+import { PostDetailPageWrapper, TypographyPostDetailPage, ButtonPostDetailPage, FormPostDetailPage, ArrowBack, PaperDetailPage, PaperWrapper } from './style';
+import TextField from '@material-ui/core/TextField';
 
 
 class PostDetailPage extends React.Component{
@@ -37,15 +40,24 @@ renderComments=()=>{
     const {postDetails} = this.props
 
     if(postDetails.comments !== undefined){
+        
+        const postsDetailsInOrder = postDetails.comments.sort((b, a) => 
+            a.votesCount - b.votesCount
+        )
+        
         return (
-            postDetails.comments.map((comment)=>{
+            postsDetailsInOrder.map((comment)=>{
                 return(
                     //criar componente de card
-                    <CommentCard 
+                    <CommentCard
+                        key={comment.id}
                         username={comment.username}
                         text={comment.text}
                         votesCount={comment.votesCount}
-                    />
+                        upVoteComment={() => this.handleVoteComment(comment.userVoteDirection, "UP_VOTE_COMMENT", postDetails.id, comment.id)}
+                        downVoteComment={() => this.handleVoteComment(comment.userVoteDirection, "DOWN_VOTE_COMMENT", postDetails.id, comment.id)}
+                        voteCommentDirection={comment.userVoteDirection}
+                    />                    
                     )
                 })
         )
@@ -72,30 +84,88 @@ handleSubmit = (event) => {
     })
 }
 
+handleVoteComment = (currentDirection, type, postId, commentId) => {
+    const { upVoteComment, downVoteComment, noVoteComment } = this.props
+    const token = localStorage.getItem("token")
+
+    switch(type){
+        case "UP_VOTE_COMMENT": {
+            const updateVoteComment = () => {
+                if(currentDirection === 1){
+                    return noVoteComment(postId, commentId, token)
+                } else {
+                    return upVoteComment(postId, commentId, token)
+                }
+            }
+            return updateVoteComment()
+        }
+
+        case "DOWN_VOTE_COMMENT": {
+            const updateVoteComment = () => {
+                if(currentDirection === -1){
+                    return noVoteComment(postId, commentId, token)                
+                } else {
+                    return downVoteComment(postId, commentId, token)
+                }
+            }
+            return updateVoteComment()
+        }
+    }
+}
+
 render(){
 
-    const { goToFeedPage } = this.props
+    const { goToFeedPage, postDetails } = this.props
 
-    return(
-        <div>
-            FeedDetail
-            <button onClick={goToFeedPage}>Voltar</button>
+    if(this.props.postDetails.comments === undefined){
+        return (
+            <div>
+                <ArrowBack onClick={goToFeedPage}>Voltar</ArrowBack>
+                <h3>Carregando...</h3>
+            </div>
+        )
+    } else {
 
-            <form onSubmit={this.handleSubmit}>
-                <label forHtml="text">Comentário: </label>
-                <input 
-                    name="text"
-                    type="text"
-                    onChange={this.handleInputComment}
-                    value={this.state.inputComment}
-                />                
+        return(
+            <PostDetailPageWrapper>
+                <ArrowBack onClick={goToFeedPage}>Voltar</ArrowBack>
                 
-                <button type="submit">Enviar</button>
-            </form>
+                <TypographyPostDetailPage variant="h6" gutterBottom>Detalhes</TypographyPostDetailPage>
+                
+                <PaperWrapper>
+                    <PaperDetailPage elevation={3}>
+                        <PostDetailCard 
+                            username={postDetails.username}
+                            title={postDetails.title}
+                            text={postDetails.text}
+                            votesCount={postDetails.votesCount}
+                            commentsNumber={postDetails.commentsCount}
+                        />
 
-            {this.renderComments()}
-        </div>
-    )
+                        <FormPostDetailPage onSubmit={this.handleSubmit}>
+                                <TextField
+                                    label="Comentário" 
+                                    variant="outlined"
+                                    name="text"
+                                    type="text"
+                                    onChange={this.handleInputComment}
+                                    value={this.state.inputComment}
+                                />                
+                                
+                                <ButtonPostDetailPage 
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit">
+                                        Enviar
+                                </ButtonPostDetailPage>
+                        </FormPostDetailPage>                
+                    </PaperDetailPage>
+                </PaperWrapper>
+
+                {this.renderComments()}
+            </PostDetailPageWrapper>
+        )
+    }
 }
 
 }
@@ -110,7 +180,10 @@ const mapDispatchToProps = dispatch =>{
     return{
         goToLoginPage:()=> dispatch(replace(routes.root)),
         goToFeedPage:()=> dispatch(goBack()),
-        createComment: (token, postId, commentText) => dispatch(createComment(token, postId, commentText))
+        createComment: (token, postId, commentText) => dispatch(createComment(token, postId, commentText)),
+        upVoteComment: (postId, commentId, token) => dispatch(voteComment(1, postId, commentId, token)),
+        downVoteComment: (postId, commentId, token) => dispatch(voteComment(-1, postId, commentId, token)),
+        noVoteComment: (postId, commentId, token) => dispatch(voteComment(0, postId, commentId, token))
     }
 }
 
