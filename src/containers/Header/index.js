@@ -1,5 +1,5 @@
 import React from "react";
-import {HeaderWrapper} from "./style"
+import { HeaderWrapper, ImgLogo, ButtonHeader } from "./style"
 import { replace } from "connected-react-router";
 import { routes } from '../Router';
 import { connect } from "react-redux";
@@ -15,8 +15,9 @@ logout = () => {
 render(){    
     return(
         <HeaderWrapper>
-            HEADER
-            <button onClick={this.logout}>Sair</button>
+            <ImgLogo src={require('../../img/logo.png')} />
+
+            <ButtonHeader variant="contained" color="secondary" onClick={this.logout}>Logout</ButtonHeader>
         </HeaderWrapper>
     )
 }

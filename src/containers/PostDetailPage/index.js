@@ -5,7 +5,7 @@ import {replace, goBack} from "connected-react-router"
 import CommentCard from '../../components/CommentCard';
 import { createComment } from '../../actions/comment';
 import { voteComment } from '../../actions/comment';
-
+import PostDetailCard from '../../components/PostDetailCard';
 
 
 class PostDetailPage extends React.Component{
@@ -113,12 +113,22 @@ handleVoteComment = (currentDirection, type, postId, commentId) => {
 
 render(){
 
-    const { goToFeedPage } = this.props
+    const { goToFeedPage, postDetails } = this.props    
 
     return(
         <div>
             FeedDetail
             <button onClick={goToFeedPage}>Voltar</button>
+            
+            <hr />
+            <PostDetailCard 
+                username={postDetails.username}
+                title={postDetails.title}
+                text={postDetails.text}
+                votesCount={postDetails.votesCount}
+                commentsNumber={postDetails.commentsCount}
+            />
+            <hr />
 
             <form onSubmit={this.handleSubmit}>
                 <label htmlFor="text">Comentário: </label>
