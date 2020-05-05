@@ -1,20 +1,16 @@
 import React from 'react';
-import {CreatePostWrapper, FeedPageWrapper, FormFeedPage, TypographyFeedPage, ButtonFeedPage} from "./style";
+import { FeedPageWrapper, } from "./style";
 import { connect } from "react-redux";
 import { push, replace } from "connected-react-router";
 import {routes} from "../Router";
 import {getPosts, createPost, getPostDetails, addVote} from "../../actions/post";
 import PostCard from "../../components/PostCard";
-import TextField from '@material-ui/core/TextField';
+
+import FormFeed from "../../components/FormFeed"
 
 
 class FeedPage extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            postForm:""
-        }
-    }
+
 
 componentDidMount(){
     const {goToLoginPage, getPosts} = this.props
@@ -24,22 +20,12 @@ componentDidMount(){
                       : getPosts(token) );
 }
 
-
-handleInputChange = (event) =>{
-    const { name, value } = event.target;
-
-    this.setState({postForm: {...this.state.postForm, [name]: value}})
-}
-
-handleSubmit = (event) =>{
+handleSubmit = (postForm) =>{
     const {createPost} = this.props
-    event.preventDefault();
-
+    
     const token = localStorage.getItem("token");
 
-    createPost(token, this.state.postForm);
-    
-    this.setState({postForm: ""});    
+    createPost(token, postForm);
 }
 
 handleGetPostDetails = (postId) =>{
@@ -106,9 +92,7 @@ renderPosts = () =>{
     )
 }
 
-
 render(){
-    const {postForm}=this.state
     
     if(this.props.posts.length < 1){
         return (
@@ -120,34 +104,8 @@ render(){
     
         return(
             <FeedPageWrapper>
-                <CreatePostWrapper>
-                    <FormFeedPage onSubmit={this.handleSubmit}>
-                        <TypographyFeedPage variant="h6">Feed de Posts</TypographyFeedPage>
-                        <TextField 
-                            label="Título"
-                            variant="outlined"
-                            name={"title"}
-                            type={"text"}
-                            pattern={"[A-Za-z ãéÁáêõÕÊíÍçÇÚúüÜ 0123456789]{3,}"}
-                            title={"O título deve conter pelo menos 3 letras"}
-                            value={postForm.title || ""}
-                            onChange={this.handleInputChange}
-                            required
-                        />
-                        
-                        <TextField 
-                            label="Conteúdo"
-                            variant="outlined"
-                            name={"text"}
-                            type={"text"}
-                            value={postForm.text || ""}
-                            onChange={this.handleInputChange}
-                            required
-                        />
-                        <ButtonFeedPage variant="contained" color="primary" type="submit">Postar</ButtonFeedPage>
-                    </FormFeedPage>
-                </CreatePostWrapper>
 
+                <FormFeed handleSubmit={this.handleSubmit}/>
                 {this.renderPosts()}
 
             </FeedPageWrapper>

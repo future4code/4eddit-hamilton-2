@@ -23,10 +23,7 @@ export function Router(props) {
         <Route exact path={routes.feed} component={FeedPage} />
         <Route exact path={routes.signUp} component={SignUpPage} />
         <Route exact path={routes.postDetail} component={PostDetailPage} />
-        
       </Switch>
     </ConnectedRouter>
   );
 }
-
-// export default Router;
