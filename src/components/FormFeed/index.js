@@ -27,7 +27,6 @@ export default class FormFeed extends React.Component{
     }
 
     render(){
-
         return(
             <CreatePostWrapper>
                     <FormFeedPage onSubmit={this.handleSubmit}>
