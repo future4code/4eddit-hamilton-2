@@ -41,3 +41,9 @@ export const App = () => (
 );
 
 export default App;
+
+
+//REFERENCIAS
+//http://4eddit-hamilton-grupo2.surge.sh/
+//LOGIN: ricardo@labenu.com.br
+//senha: 12345
